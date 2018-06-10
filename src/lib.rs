@@ -1,3 +1,34 @@
+//! # Fabulous APRS Parser
+//!
+//! This is a Rust warpper around the C port of Fabulous (or, perhaps, Finnish) APRS Parser, aka 
+//! [`libfap`](http://www.pakettiradio.net/libfap/). 
+//!
+//! To parse a packet:
+//!
+//! ```rust
+//! extern crate aprs; 
+//! extern crate fap;
+//! use aprs::{Packet, Position, Degrees, Knots}; 
+//!
+//! let raw = "DISCOF>APT314,RAZOR*,WIDE1*,qAS,GERLCH:/022526h4046.40N/11912.12W-347/001/";
+//! let parsed = fap::Packet::new(raw);
+//! 
+//! match parsed {
+//!     Ok(packet) => {
+//!         assert_eq!(packet.source(), "DISCOF");
+//!         assert_eq!(packet.latitude(), Some(40.7733335));
+//!         assert_eq!(packet.longitude(), Some(-119.202));
+//!         assert_eq!(packet.course(), Some(Degrees(347.0)));
+//!     },
+//!     Err(_) => {
+//!         panic!("Bad packet!")
+//!     }
+//! }
+//! ```
+//!
+//! Parsed packet implements `aprs::Packet` trait, see [`aprs` crate documentation](https://docs.rs/aprs) 
+//! for details on how to use the returned value. 
+//! 
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
@@ -5,6 +36,10 @@
 
 extern crate aprs;
 
+mod bind {
+    include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+}
+use bind::*;
 use aprs::{Position, Feet, Knots, KilometersPerHour,
     Meters, Degrees, Fahrenheits, Symbol};
 use std::ffi::{CStr, CString, NulError};
@@ -15,7 +50,6 @@ use std::vec::Vec;
 use std::fmt;
 use std::time::{SystemTime, Duration, UNIX_EPOCH};
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 #[derive(Debug)]
 pub enum Error{

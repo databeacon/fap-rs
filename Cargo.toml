@@ -3,9 +3,12 @@ name = "fap"
 version = "0.1.0"
 authors = ["Dmitry Azovtsev <dmitry@azovtsev.com>"]
 description = "Rust warpper around Fabulous APRS Parser (aka libfap)"
+documentation = "https://docs.rs/fap/"
+repository = "https://github.com/azov/fap-rs"
+license = "Artistic-1.0-Perl"
 
 [dependencies]
-aprs = {version="0.2.0", path="../aprs-rs"}
+aprs = {version="0.2.1"}
 
 [dev-dependencies]
 approx = "0.2.0"
