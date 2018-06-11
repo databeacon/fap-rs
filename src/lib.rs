@@ -40,7 +40,7 @@ mod bind {
     include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 }
 use bind::*;
-use aprs::{Position, Feet, Knots, KilometersPerHour,
+use aprs::{Packet as AprsPacket, Position, Feet, Knots, KilometersPerHour,
     Meters, Degrees, Fahrenheits, Symbol};
 use std::ffi::{CStr, CString, NulError};
 use std::os::raw::{c_uint, c_short};
@@ -82,6 +82,7 @@ impl fmt::Display for Error {
 
 static INIT: Once = ONCE_INIT;
 
+#[derive(Debug)]
 pub struct Packet { 
     ptr: *mut fap_packet_t, 
 }
@@ -134,7 +135,7 @@ impl Packet {
     }
 }
 
-impl aprs::Packet for Packet {
+impl AprsPacket for Packet {
     fn source(&self) -> Cow<str> {
         debug_assert!(!self.fap().src_callsign.is_null());
         unsafe{ CStr::from_ptr(self.fap().src_callsign) }.to_string_lossy()
@@ -235,5 +236,11 @@ impl aprs::Packet for Packet {
 
     fn wind_speed(&self) -> Option<Knots> {
         unimplemented!();
+    }
+}
+
+impl fmt::Display for Packet {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}>{:?} @ {:?} ts:{:?}", self.source(), self.symbol(), self.position(), self.timestamp())
     }
 }
