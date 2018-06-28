@@ -9,10 +9,10 @@ license = "Artistic-1.0-Perl"
 
 [dependencies]
 aprs = { version="0.3"}
-humantime = "*"
+humantime = "1"
 
 [dev-dependencies]
-approx = "0.2.0"
+approx = "0.2"
 
 [build-dependencies]
 cc = "1"
