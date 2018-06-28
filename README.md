@@ -11,6 +11,6 @@
 [docsrs-image]: https://docs.rs/fap/badge.svg
 [docsrs]: https://docs.rs/fap
 
-Rust warpper around Fabulous (or Finnish?) APRS Parser, aka [`libfap`](http://www.pakettiradio.net/libfap/).
+Rust wrapper around Fabulous (or Finnish?) APRS Parser, aka [`libfap`](http://www.pakettiradio.net/libfap/).
 
 See [crate documentation](https://docs.rs/fap) for usage and examples. 
