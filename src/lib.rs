@@ -1,6 +1,6 @@
 //! # Fabulous APRS Parser
 //!
-//! This is a Rust warpper around the C port of Fabulous (or, perhaps, Finnish) APRS Parser, aka 
+//! This is a Rust wrapper around Fabulous (or, perhaps, Finnish... or both) APRS Parser, aka 
 //! [`libfap`](http://www.pakettiradio.net/libfap/). 
 //!
 //! To parse a packet:
@@ -43,7 +43,7 @@ use bind::*;
 use aprs::{Packet as AprsPacket, Position, Feet, Knots, KilometersPerHour,
     Meters, Degrees, Fahrenheits, Symbol};
 use std::ffi::{CStr, CString, NulError};
-use std::os::raw::{c_uint, c_short};
+use std::os::raw::{c_uint, c_short, c_char};
 use std::sync::{Once, ONCE_INIT};
 use std::borrow::Cow;
 use std::vec::Vec;
@@ -104,15 +104,15 @@ impl Packet {
             INIT.call_once(|| {
                 fap_init();
             });
-            let ptr = fap_parseaprs(data.as_ptr() as *const i8, len as c_uint, 0 as c_short);
+            let ptr = fap_parseaprs(data.as_ptr() as *const c_char, len as c_uint, 0 as c_short);
             if ptr.is_null() {
                 return Err(Error::Other("libfap returned null value - allocation failure?".to_string()))
             }   
             let packet = Packet{ ptr }; 
             if !packet.fap().error_code.is_null() {
                 let buf = &mut [0 as i8; 64];
-                fap_explain_error(*packet.fap().error_code, buf.as_mut_ptr());
-                let msg = CStr::from_ptr(buf.as_ptr());
+                fap_explain_error(*packet.fap().error_code, buf.as_mut_ptr() as *mut c_char);
+                let msg = CStr::from_ptr(buf.as_ptr() as *mut c_char);
                 return Err(Error::Other(msg.to_string_lossy().into_owned()));
             }
             Ok(packet) 
@@ -241,6 +241,6 @@ impl AprsPacket for Packet {
 
 impl fmt::Display for Packet {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}>{:?} @ {:?} ts:{:?}", self.source(), self.symbol(), self.position(), self.timestamp())
+        write!(f, "{:9} {:19} @ {:?}", self.source(), format!("{:?}", self.symbol()), self.position())
     }
 }

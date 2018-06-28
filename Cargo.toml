@@ -1,6 +1,6 @@
 [package]
 name = "fap"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Dmitry Azovtsev <dmitry@azovtsev.com>"]
 description = "Rust warpper around Fabulous APRS Parser (aka libfap)"
 documentation = "https://docs.rs/fap/"
@@ -8,7 +8,8 @@ repository = "https://github.com/azov/fap-rs"
 license = "Artistic-1.0-Perl"
 
 [dependencies]
-aprs = "*"
+aprs = { version="0.3"}
+humantime = "*"
 
 [dev-dependencies]
 approx = "0.2.0"
