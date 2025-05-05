@@ -44,7 +44,7 @@ use aprs::{Packet as AprsPacket, Position, Feet, Knots, KilometersPerHour,
     Meters, Degrees, Fahrenheits, Symbol};
 use std::ffi::{CStr, CString, NulError};
 use std::os::raw::{c_uint, c_short, c_char};
-use std::sync::{Once, ONCE_INIT};
+use std::sync::Once;
 use std::borrow::Cow;
 use std::vec::Vec;
 use std::fmt;
@@ -64,9 +64,9 @@ impl std::error::Error for Error {
         }
     }
 
-    fn cause(&self) -> Option<&std::error::Error> {
+    fn cause(&self) -> Option<&dyn std::error::Error> {
         match self {
-            Error::NulInInputData(ref err) => Some(err),
+            Error::NulInInputData(err) => Some(err),
             Error::Other(_) => None, 
         }        
     }
@@ -80,7 +80,7 @@ impl fmt::Display for Error {
     }
 }
 
-static INIT: Once = ONCE_INIT;
+static INIT: Once = Once::new();
 
 #[derive(Debug)]
 pub struct Packet { 

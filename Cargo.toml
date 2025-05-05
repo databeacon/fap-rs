@@ -6,14 +6,16 @@ description = "Rust warpper around Fabulous APRS Parser (aka libfap)"
 documentation = "https://docs.rs/fap/"
 repository = "https://github.com/azov/fap-rs"
 license = "Artistic-1.0-Perl"
+edition = "2024"
 
 [dependencies]
-aprs = { version="0.3"}
-humantime = "1"
+#aprs = "0.3"
+aprs = { git="https://github.com/databeacon/aprs-rs.git", rev="0.3.1-databeacon"}
+humantime = "2.2.0"
 
 [dev-dependencies]
-approx = "0.2"
+approx = "0.5.1"
 
 [build-dependencies]
 cc = "1"
-bindgen = "0.37"
+bindgen = "0.71.1"
